@@ -1,3 +1,12 @@
+use auth;
+
+--- disable foreign keys to truncate example tables
+--- we need to truncate any data that is in base image of RDS as it may have 
+--- conflicts with the environment that is being migrated
+
+SET FOREIGN_KEY_CHECKS = 0; 
+
+
 --
 -- table `access_rule`
 --
@@ -37,7 +46,7 @@ INSERT INTO connection (uuid, label, id, subprefix, requiredFields) VALUES (0x6D
 --
 -- table `privilege`
 --
-
+truncate table privilege;
 INSERT INTO privilege (uuid, description, name, application_id, queryScope, queryTemplate) VALUES (0x420D39FF71F14B60BBBDEF2BBAB297A2,'PIC-SURE Auth super admin for managing roles/privileges/application','SUPER_ADMIN',NULL,NULL,NULL);
 INSERT INTO privilege (uuid, description, name, application_id, queryScope, queryTemplate) VALUES (0x556A3AB3351D48DB869C46DC38457F88,'PIC-SURE Auth admin for managing users/connections.','SYSTEM',NULL,NULL,NULL);
 INSERT INTO privilege (uuid, description, name, application_id, queryScope, queryTemplate) VALUES (0x6A84396DAE8D4C61AA2D24835394F21D,'Privilege to manage users.','ADMIN',NULL,NULL,NULL);
@@ -48,6 +57,8 @@ INSERT INTO privilege (uuid, description, name, application_id, queryScope, quer
 -- table `role`
 --
 
+truncate table role;
+
 INSERT INTO role (uuid, name, description) VALUES (0x7F6883BD83AA44F0930A012A0D8B5221,'PIC-SURE Project Manager','Manages users and their access levels. ');
 INSERT INTO role (uuid, name, description) VALUES (0xE01D73E6DA9844DF82C5B30189335FE3,'PIC-SURE Top Admin','PIC-SURE Auth Micro App Top admin including Admin and super Admin');
 INSERT INTO role (uuid, name, description) VALUES (0xFEA46D3AF3F245FA8CAA4500DC83946E,'IRB Approved Researcher','User can perform subset queries as well as export data.');
@@ -56,6 +67,8 @@ INSERT INTO role (uuid, name, description) VALUES (0xFEA46D3AF3F245FA8CAA4500DC8
 -- table `role_privilege`
 --
 
+truncate table role_privilege;
+
 INSERT INTO role_privilege (role_id, privilege_id) VALUES (0xE01D73E6DA9844DF82C5B30189335FE3,0x420D39FF71F14B60BBBDEF2BBAB297A2);
 INSERT INTO role_privilege (role_id, privilege_id) VALUES (0xE01D73E6DA9844DF82C5B30189335FE3,0x556A3AB3351D48DB869C46DC38457F88);
 INSERT INTO role_privilege (role_id, privilege_id) VALUES (0x7F6883BD83AA44F0930A012A0D8B5221,0x6A84396DAE8D4C61AA2D24835394F21D);
@@ -63,3 +76,6 @@ INSERT INTO role_privilege (role_id, privilege_id) VALUES (0xE01D73E6DA9844DF82C
 INSERT INTO role_privilege (role_id, privilege_id) VALUES (0x7F6883BD83AA44F0930A012A0D8B5221,0xE932AB5635014BDB840BE5D2C260C5E0);
 INSERT INTO role_privilege (role_id, privilege_id) VALUES (0xE01D73E6DA9844DF82C5B30189335FE3,0xE932AB5635014BDB840BE5D2C260C5E0);
 INSERT INTO role_privilege (role_id, privilege_id) VALUES (0xFEA46D3AF3F245FA8CAA4500DC83946E,0xF50BCBB55C4D489EAE11D810BEF6D0EE);
+
+
+SET FOREIGN_KEY_CHECKS = 1; 
