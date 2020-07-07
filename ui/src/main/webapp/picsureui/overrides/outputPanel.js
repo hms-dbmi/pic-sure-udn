@@ -1,5 +1,5 @@
-define(["handlebars", "backbone", "text!../settings/settings.json", "text!output/outputPanel.hbs", "text!options/modal.hbs"], 
-function(HBS, BB, settings, outputTemplate, modalTemplate){
+define(["handlebars", "backbone", "text!../settings/settings.json", "text!output/outputPanel.hbs", "text!options/modal.hbs", "text!output/variantTable.hbs"], 
+function(HBS, BB, settings, outputTemplate, modalTemplate, variantTableTemplate){
 	
 	return {
 		/*
@@ -30,6 +30,7 @@ function(HBS, BB, settings, outputTemplate, modalTemplate){
 				});
 				
 				this.modalTemplate = HBS.compile(modalTemplate);
+				this.variantTableTemplate = HBS.compile(variantTableTemplate);
 			},
 			events:{
 				"click #select-btn": "select",
@@ -62,11 +63,32 @@ function(HBS, BB, settings, outputTemplate, modalTemplate){
 				 	dataType: 'text',
 				 	success: function(response){
 				 		console.log(response);
-//				 		$("#variant-data").html(response);
 				 		
-				 		$("#modal-window").html(this.modalTemplate({title: "User Profile"}));
+				 		variantHtml = "No Variant Data Available"
+				 		output = {};
+				 		
+				 		if(response.length > 0){
+							var lines = response.split("\n");
+							
+							headers = lines[0].split("\t");
+							output["headers"] = headers;
+							output["variants"] = []
+							
+							for(i = 1; i < lines.length; i++){
+								variantData = {};
+								values = lines[i].split("\t");
+								for(j=0; j < values.length; j++){
+									variantData[headers[j]] = values[j];
+								}
+								output["variants"].push(variantData);
+							}
+							
+							variantHtml = this.variantTableTemplate(output);
+				 		}
+				 		
+				 		$("#modal-window").html(this.modalTemplate({title: "Variant Data"}));
 		                $("#modalDialog").show();
-		                $(".modal-body").html(response);
+		                $(".modal-body").html(variantHtml);
 		                $('.close').click(this.closeDialog);
 		                
 				 	}.bind(this),
