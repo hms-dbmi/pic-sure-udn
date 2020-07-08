@@ -347,3 +347,7 @@ input::-webkit-inner-spin-button {
   background-color: #f4f4f6;
 }
 
+#variant-data-container {
+	width: 90%;
+	padding-bottom: 12;
+}

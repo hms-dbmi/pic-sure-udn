@@ -1,5 +1,5 @@
-define(["handlebars", "backbone", "text!../settings/settings.json", "text!output/outputPanel.hbs", "text!options/modal.hbs", "text!output/variantTable.hbs"], 
-function(HBS, BB, settings, outputTemplate, modalTemplate, variantTableTemplate){
+define(["handlebars", "backbone", "text!../settings/settings.json", "text!output/outputPanel.hbs", "text!options/modal.hbs", "text!output/variantTable.hbs", "output/dataSelection"], 
+function(HBS, BB, settings, outputTemplate, modalTemplate, variantTableTemplate, dataSelection){
 	
 	return {
 		/*
@@ -31,14 +31,14 @@ function(HBS, BB, settings, outputTemplate, modalTemplate, variantTableTemplate)
 				
 				this.modalTemplate = HBS.compile(modalTemplate);
 				this.variantTableTemplate = HBS.compile(variantTableTemplate);
+				settings = JSON.parse(settings);
 			},
 			events:{
 				"click #select-btn": "select",
-				"click #countVariants" : "countVariants",
-				"click #variantdata" : "variantdata"
+				"click #variantdata" : "variantdata",
+				"click .close" : "closeDialog"
 			},
 			select: function(event){
-				
 				this.model.set('spinning', true);
 				if(!this.dataSelection){
 					var query = JSON.parse(JSON.stringify(this.model.get("query")));
@@ -48,10 +48,45 @@ function(HBS, BB, settings, outputTemplate, modalTemplate, variantTableTemplate)
 					this.dataSelection.render();
 				}
 			},
+			// Check the number of variants in the query and show a modal if valid.
 			variantdata: function(event){
 				// make a safe deep copy of the incoming query so we don't modify it
 				var query = JSON.parse(JSON.stringify(this.model.get("query")));
-//				query.query.expectedResultType="VARIANT_COUNT_FOR_QUERY";
+				
+				//this query type counts the number of variants described by the query.
+				query.query.expectedResultType="VARIANT_COUNT_FOR_QUERY";
+				
+				$.ajax({
+				 	url: window.location.origin + "/picsure/query/sync",
+				 	type: 'POST',
+				 	headers: {"Authorization": "Bearer " + JSON.parse(sessionStorage.getItem("session")).token},
+				 	contentType: 'application/json',
+				 	data: JSON.stringify(query),
+				 	dataType: 'text',
+				 	success: function(response){
+//				 		console.log(response);
+				 		
+				 		//If there are fewer variants than the limit, show the modal
+				 		maxVariantCount =  settings.maxVariantCount ? settings.maxVariantCount : 1000;
+				 		if( parseInt(response) <= maxVariantCount ){
+				 			this.showVariantDataModal(query);
+				 		} else {
+				 			$("#modal-window").html(this.modalTemplate({title: "Variant Data"}));
+			                $("#modalDialog").show();
+			                $(".modal-body").html("Too many variants!  Found " + parseInt(response) + ", but cannot display more than " + maxVariantCount + " variants.");
+				 		}
+				 	}.bind(this),
+				 	error: function(response){
+				 		console.log("ERROR: " + response);
+					}
+				});
+			},
+			//this takes a parsed query object and gets a list of variant data & zygosities from the HPDS 
+			//and creates a modal table to display it
+			showVariantDataModal: function(query){
+				
+				//we expect an object that has already been parsed/copied from the model.  
+				//update the result type to get the variant data
 				query.query.expectedResultType="VCF_EXCERPT";
 
 				$.ajax({
@@ -62,18 +97,20 @@ function(HBS, BB, settings, outputTemplate, modalTemplate, variantTableTemplate)
 				 	data: JSON.stringify(query),
 				 	dataType: 'text',
 				 	success: function(response){
-				 		console.log(response);
+//				 		console.log(response);
 				 		
+				 		//default message if no data
 				 		variantHtml = "No Variant Data Available"
 				 		output = {};
 				 		
 				 		if(response.length > 0){
+				 			//each line is TSV
 							var lines = response.split("\n");
 							
 							headers = lines[0].split("\t");
 							output["headers"] = headers;
 							output["variants"] = []
-							
+							//read the tsv lines into an object that we can sent to Handlebars template
 							for(i = 1; i < lines.length; i++){
 								variantData = {};
 								values = lines[i].split("\t");
@@ -82,44 +119,24 @@ function(HBS, BB, settings, outputTemplate, modalTemplate, variantTableTemplate)
 								}
 								output["variants"].push(variantData);
 							}
-							
+							//render the template!
 							variantHtml = this.variantTableTemplate(output);
 				 		}
 				 		
-				 		$("#modal-window").html(this.modalTemplate({title: "Variant Data"}));
+				 		//lines ends up with a trailing empty object; strip that and the header row for the count
+				 		$("#modal-window").html(this.modalTemplate({title: "Variant Data: " + (lines.length - 2) + " variants found"}));
 		                $("#modalDialog").show();
 		                $(".modal-body").html(variantHtml);
-		                $('.close').click(this.closeDialog);
 		                
+		                //now add a handy download link!
+		                $(".modal-header").append("<a id='variant-download-btn'>Download Vcf</a>");
+		                responseDataUrl = URL.createObjectURL(new Blob([response], {type: "octet/stream"}));
+						$("#variant-download-btn", this.$el).off('click');
+						$("#variant-download-btn", this.$el).attr("href", responseDataUrl);
+						$("#variant-download-btn", this.$el).attr("download", "variantData.tsv");
 				 	}.bind(this),
 				 	error: function(response){
-				 		$("#variant-data").html("ERROR: " + message);
-				 		console.log(response);
-					}
-				});
-				
-			},
-			countVariants: function(event){
-				// make a safe deep copy of the incoming query so we don't modify it
-				var query = JSON.parse(JSON.stringify(this.model.get("query")));
-//				query.query.expectedResultType="VARIANT_COUNT_FOR_QUERY";
-				query.query.expectedResultType="VARIANT_LIST_FOR_QUERY";
-				
-
-				$.ajax({
-				 	url: window.location.origin + "/picsure/query/sync",
-				 	type: 'POST',
-				 	headers: {"Authorization": "Bearer " + JSON.parse(sessionStorage.getItem("session")).token},
-				 	contentType: 'application/json',
-				 	data: JSON.stringify(query),
-				 	dataType: 'text',
-				 	success: function(response){
-				 		console.log(response);
-				 		$("#variant-count").html(response);
-				 	},
-				 	error: function(response){
-				 		$("#variant-count").html("ERROR: " + response.responseText);
-				 		console.log(response);
+				 		console.log("ERROR: " + response);
 					}
 				});
 				
@@ -137,7 +154,7 @@ function(HBS, BB, settings, outputTemplate, modalTemplate, variantTableTemplate)
 
 				// make a safe deep copy of the incoming query so we don't modify it
 				var query = JSON.parse(JSON.stringify(incomingQuery));
-				query.resourceUUID = JSON.parse(settings).picSureResourceId;
+				query.resourceUUID = settings.picSureResourceId;
 				query.resourceCredentials = {};
 				query.query.expectedResultType="COUNT";
 				this.model.set("query", query);
