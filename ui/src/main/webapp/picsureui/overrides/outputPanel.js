@@ -193,7 +193,7 @@ function(HBS, BB, settings, outputTemplate, modalTemplate, variantTableTemplate,
 							window.location = "/";
 						} else {
 							response.responseText = "<h4>"
-								+ overrides.outputErrorMessage ? overrides.outputErrorMessage : "There is something wrong when processing your query, please try it later, if this repeats, please contact admin."
+								+"Something went wrong while processing your query, please try again later.  If this repeats, please contact admin."
 								+ "</h4>";
 					 		errorCallback(response.responseText);//console.log("error");console.log(response);
 						}
