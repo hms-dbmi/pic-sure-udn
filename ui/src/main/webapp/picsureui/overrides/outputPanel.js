@@ -129,7 +129,7 @@ function(HBS, BB, settings, outputTemplate, modalTemplate, variantTableTemplate,
 		                $(".modal-body").html(variantHtml);
 		                
 		                //now add a handy download link!
-		                $(".modal-header").append("<a id='variant-download-btn'>Download Vcf</a>");
+		                $(".modal-header").append("<a id='variant-download-btn'>Download Variant Data</a>");
 		                responseDataUrl = URL.createObjectURL(new Blob([response], {type: "octet/stream"}));
 						$("#variant-download-btn", this.$el).off('click');
 						$("#variant-download-btn", this.$el).attr("href", responseDataUrl);
