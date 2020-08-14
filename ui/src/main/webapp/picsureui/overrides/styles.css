@@ -356,3 +356,7 @@ input::-webkit-inner-spin-button {
 	max-height: 100%;
 	overflow-y: auto;
 }
+
+.modalBody {
+	overflow-x: scroll;
+}
