@@ -352,11 +352,3 @@ input::-webkit-inner-spin-button {
 	padding-bottom: 12;
 }
 
-#modalDialog {
-	max-height: 100%;
-	overflow-y: auto;
-}
-
-.modal-body {
-	overflow-x: scroll;
-}

@@ -36,7 +36,6 @@ function(HBS, BB, settings, outputTemplate, modalTemplate, variantTableTemplate,
 			events:{
 				"click #select-btn": "select",
 				"click #variantdata" : "variantdata",
-				"click .close" : "closeDialog"
 			},
 			select: function(event){
 				this.model.set('spinning', true);
@@ -72,6 +71,10 @@ function(HBS, BB, settings, outputTemplate, modalTemplate, variantTableTemplate,
 				 			this.showVariantDataModal(query);
 				 		} else {
 				 			$("#modal-window").html(this.modalTemplate({title: "Variant Data"}));
+				 			$(".close").click(function(){
+				 				 $("#modalDialog").hide();
+							});
+				 			
 			                $("#modalDialog").show();
 			                $(".modal-body").html("Too many variants!  Found " + parseInt(response) + ", but cannot display more than " + maxVariantCount + " variants.");
 				 		}
@@ -125,6 +128,9 @@ function(HBS, BB, settings, outputTemplate, modalTemplate, variantTableTemplate,
 				 		
 				 		//lines ends up with a trailing empty object; strip that and the header row for the count
 				 		$("#modal-window").html(this.modalTemplate({title: "Variant Data: " + (lines.length - 2) + " variants found"}));
+				 		$(".close").click(function(){
+			 				 $("#modalDialog").hide();
+						});
 		                $("#modalDialog").show();
 		                $(".modal-body").html(variantHtml);
 		                
@@ -141,9 +147,6 @@ function(HBS, BB, settings, outputTemplate, modalTemplate, variantTableTemplate,
 				});
 				
 			},
-			closeDialog: function () {
-	            $("#modalDialog").hide();
-	        },
 			totalCount: 0,
 			tagName: "div",
 			update: function(incomingQuery){
