@@ -35,7 +35,7 @@ function(HBS, BB, settings, outputTemplate, modalTemplate, variantTableTemplate,
 			},
 			events:{
 				"click #select-btn": "select",
-				"click #variantdata" : "variantdata",
+				"click #variant-data-btn" : "variantdata",
 			},
 			select: function(event){
 				this.model.set('spinning', true);
@@ -157,6 +157,7 @@ function(HBS, BB, settings, outputTemplate, modalTemplate, variantTableTemplate,
 
 				// make a safe deep copy of the incoming query so we don't modify it
 				var query = JSON.parse(JSON.stringify(incomingQuery));
+
 				query.resourceUUID = settings.picSureResourceId;
 				query.resourceCredentials = {};
 				query.query.expectedResultType="COUNT";
@@ -209,6 +210,9 @@ function(HBS, BB, settings, outputTemplate, modalTemplate, variantTableTemplate,
 				if(this.dataSelection){
 					this.dataSelection.setElement($("#concept-tree-div",this.$el));
 					this.dataSelection.render();
+				}
+				if(this.model.get("query") && this.model.get("query").query.variantInfoFilters.length > 0){
+					$("#variant-data-btn").removeClass("hidden");
 				}
 			}
 		})
