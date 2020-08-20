@@ -331,3 +331,24 @@ input::-webkit-inner-spin-button {
     bottom: 0;
     width: 100%;
 }
+
+.variantTable {
+	display: block;  
+	overflow-x: auto; 
+}
+
+.variantTable  td, th {
+    text-align: center;
+    padding: 2;
+    vertical-align: bottom;
+}
+
+.variantTable tr:nth-child(even) {
+  background-color: #f4f4f6;
+}
+
+#variant-data-container {
+	width: 90%;
+	padding-bottom: 12;
+}
+
