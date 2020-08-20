@@ -212,7 +212,14 @@ function(HBS, BB, settings, outputTemplate, modalTemplate, variantTableTemplate,
 					this.dataSelection.render();
 				}
 				if(this.model.get("query") && this.model.get("query").query.variantInfoFilters.length > 0){
-					$("#variant-data-btn").removeClass("hidden");
+					_.each(this.model.get("query").query.variantInfoFilters, function(variantHolder){
+						console.log(variantHolder.categoryVariantInfoFilters);
+						if(Object.keys(variantHolder.categoryVariantInfoFilters).length != 0 ||
+						   Object.keys(variantHolder.numericVariantInfoFilters).length != 0){
+								$("#variant-data-btn").removeClass("hidden");
+						   		return false;
+						   }
+					});
 				}
 			}
 		})
