@@ -137,9 +137,9 @@ function(HBS, BB, settings, outputTemplate, modalTemplate, variantTableTemplate,
 		                //now add a handy download link!
 		                $(".modal-header").append("<a id='variant-download-btn'>Download Variant Data</a>");
 		                responseDataUrl = URL.createObjectURL(new Blob([response], {type: "octet/stream"}));
-						$("#variant-download-btn", this.$el).off('click');
-						$("#variant-download-btn", this.$el).attr("href", responseDataUrl);
-						$("#variant-download-btn", this.$el).attr("download", "variantData.tsv");
+						$("#variant-download-btn", $(".modal-header")).off('click');
+						$("#variant-download-btn", $(".modal-header")).attr("href", responseDataUrl);
+						$("#variant-download-btn", $(".modal-header")).attr("download", "variantData.tsv");
 				 	}.bind(this),
 				 	error: function(response){
 				 		console.log("ERROR: " + response);
