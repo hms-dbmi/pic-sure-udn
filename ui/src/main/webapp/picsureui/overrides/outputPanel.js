@@ -49,6 +49,8 @@ function(HBS, BB, settings, outputTemplate, modalTemplate, variantTableTemplate,
 			},
 			// Check the number of variants in the query and show a modal if valid.
 			variantdata: function(event){
+				this.model.set('spinning', true);
+				this.render();
 				// make a safe deep copy of the incoming query so we don't modify it
 				var query = JSON.parse(JSON.stringify(this.model.get("query")));
 				
@@ -71,29 +73,30 @@ function(HBS, BB, settings, outputTemplate, modalTemplate, variantTableTemplate,
 				 		responseJson = JSON.parse(response);
 				 		
 				 		if( responseJson.count == 0 ){
-				 			$("#modal-window").html(this.modalTemplate({title: "Variant Data"}));
-				 			$(".close").click(function(){
-				 				 $("#modalDialog").hide();
-							});
-				 			
-			                $("#modalDialog").show();
-			                $(".modal-body").html("No Variant Data Available.  " + responseJson.message);
+				 			this.showBasicModal("Variant Data", "No Variant Data Available.  " + responseJson.message);
 				 		} else if( responseJson.count <= maxVariantCount ){
 				 			this.showVariantDataModal(query);
 				 		} else {
-				 			$("#modal-window").html(this.modalTemplate({title: "Variant Data"}));
-				 			$(".close").click(function(){
-				 				 $("#modalDialog").hide();
-							});
-				 			
-			                $("#modalDialog").show();
-			                $(".modal-body").html("Too many variants!  Found " + parseInt(response) + ", but cannot display more than " + maxVariantCount + " variants.");
+				 			this.showBasicModal("Variant Data", "Too many variants!  Found " + parseInt(response) + ", but cannot display more than " + maxVariantCount + " variants.")
 				 		}
 				 	}.bind(this),
 				 	error: function(response){
+				 		this.model.set('spinning', false);
+				 		this.render();
 				 		console.log("ERROR: " + response);
 					}
 				});
+			},
+			showBasicModal: function(titleStr, content){
+				$("#modal-window").html(this.modalTemplate({title: titleStr}));
+	 			$(".close").click(function(){
+	 				 $("#modalDialog").hide();
+				});
+	 			
+                $("#modalDialog").show();
+                $(".modal-body").html(content);
+                this.model.set('spinning', false);
+                this.render();
 			},
 			//this takes a parsed query object and gets a list of variant data & zygosities from the HPDS 
 			//and creates a modal table to display it
@@ -151,9 +154,13 @@ function(HBS, BB, settings, outputTemplate, modalTemplate, variantTableTemplate,
 						$("#variant-download-btn", $(".modal-header")).off('click');
 						$("#variant-download-btn", $(".modal-header")).attr("href", responseDataUrl);
 						$("#variant-download-btn", $(".modal-header")).attr("download", "variantData.tsv");
+						 this.model.set('spinning', false);
+						 this.render();
 				 	}.bind(this),
 				 	error: function(response){
 				 		console.log("ERROR: " + response);
+				 		this.model.set('spinning', false);
+				 		this.render();
 					}
 				});
 				
@@ -224,7 +231,6 @@ function(HBS, BB, settings, outputTemplate, modalTemplate, variantTableTemplate,
 				}
 				if(this.model.get("query") && this.model.get("query").query.variantInfoFilters.length > 0){
 					_.each(this.model.get("query").query.variantInfoFilters, function(variantHolder){
-						console.log(variantHolder.categoryVariantInfoFilters);
 						if(Object.keys(variantHolder.categoryVariantInfoFilters).length != 0 ||
 						   Object.keys(variantHolder.numericVariantInfoFilters).length != 0){
 								$("#variant-data-btn").removeClass("hidden");
