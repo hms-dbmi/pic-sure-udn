@@ -67,7 +67,18 @@ function(HBS, BB, settings, outputTemplate, modalTemplate, variantTableTemplate,
 				 		
 				 		//If there are fewer variants than the limit, show the modal
 				 		maxVariantCount =  settings.maxVariantCount ? settings.maxVariantCount : 1000;
-				 		if( parseInt(response) <= maxVariantCount ){
+				 		
+				 		responseJson = JSON.parse(response);
+				 		
+				 		if( responseJson.count == 0 ){
+				 			$("#modal-window").html(this.modalTemplate({title: "Variant Data"}));
+				 			$(".close").click(function(){
+				 				 $("#modalDialog").hide();
+							});
+				 			
+			                $("#modalDialog").show();
+			                $(".modal-body").html("No Variant Data Available.  " + responseJson.message);
+				 		} else if( responseJson.count <= maxVariantCount ){
 				 			this.showVariantDataModal(query);
 				 		} else {
 				 			$("#modal-window").html(this.modalTemplate({title: "Variant Data"}));
