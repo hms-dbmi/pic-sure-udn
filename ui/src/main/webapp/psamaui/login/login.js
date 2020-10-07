@@ -110,6 +110,10 @@ define(['common/session', 'picSure/settings', 'common/searchParser', 'jquery', '
                             }
                         );
                         lock.show();
+			// Temporary hack until we find time to fix this for real
+			setTimeout(function(){
+				$('.auth0-lock-center').show();
+			},1500);
                     });
                 }
             }
