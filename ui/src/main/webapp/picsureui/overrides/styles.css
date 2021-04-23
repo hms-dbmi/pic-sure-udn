@@ -333,7 +333,6 @@ input::-webkit-inner-spin-button {
 }
 
 .variantTable {
-	display: block;  
 	overflow-x: auto; 
 }
 
@@ -341,6 +340,19 @@ input::-webkit-inner-spin-button {
     text-align: center;
     padding: 2;
     vertical-align: bottom;
+}
+
+div.modal-body table th {
+    position: -webkit-sticky;
+    position: sticky;
+    top: -15px;
+    z-index: 2;
+    background-color: white;
+}
+
+.modal-body {
+    overflow-y: scroll;
+    height: 75% !important;
 }
 
 .variantTable tr:nth-child(even) {
