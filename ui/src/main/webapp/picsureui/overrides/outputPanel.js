@@ -1,6 +1,12 @@
 define(["handlebars", "backbone", "text!../settings/settings.json", "text!output/outputPanel.hbs", "text!options/modal.hbs", "text!output/variantTable.hbs", "output/dataSelection"], 
 function(HBS, BB, settings, outputTemplate, modalTemplate, variantTableTemplate, dataSelection){
-	
+	var outputModelDefaults = {
+		totalPatients : 0,
+		spinnerClasses: "spinner-medium spinner-medium-center ",
+		spinning: false,
+		resources : {}
+	};
+
 	return {
 		/*
 		 * This should be a function that returns the name of a Handlebars partial
@@ -167,7 +173,7 @@ function(HBS, BB, settings, outputTemplate, modalTemplate, variantTableTemplate,
 			},
 			totalCount: 0,
 			tagName: "div",
-			update: function(incomingQuery){
+			runQuery: function(incomingQuery){
 				this.model.set("totalPatients",0);
 
 				this.model.spinAll();
@@ -245,7 +251,13 @@ function(HBS, BB, settings, outputTemplate, modalTemplate, variantTableTemplate,
 		 * If you want to replace the entire Backbone.js Model that is used for
 		 * the output panel, define it here.
 		 */
-		modelOverride : undefined,
+		modelOverride : BB.Model.extend({
+			defaults: outputModelDefaults,
+			spinAll: function(){
+				this.set('spinning', true);
+				this.set('queryRan', false);
+			}
+		}),
 		/*
 		 * In case you want to change the update logic, but not the rendering or
 		 * anything else, you can define a function that takes an incomingQuery
