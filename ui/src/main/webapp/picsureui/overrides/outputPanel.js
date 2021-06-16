@@ -1,5 +1,7 @@
-define(["handlebars", "backbone", "text!../settings/settings.json", "text!output/outputPanel.hbs", "text!options/modal.hbs", "text!output/variantTable.hbs", "output/dataSelection"], 
-function(HBS, BB, settings, outputTemplate, modalTemplate, variantTableTemplate, dataSelection){
+define(["jquery", "handlebars", "backbone", "picSure/settings", "text!output/outputPanel.hbs", "text!options/modal.hbs",
+		"text!output/variantTable.hbs", "output/dataSelection"],
+function($, HBS, BB, settings, outputTemplate, modalTemplate,
+		 variantTableTemplate, dataSelection){
 	var outputModelDefaults = {
 		totalPatients : 0,
 		spinnerClasses: "spinner-medium spinner-medium-center ",
@@ -37,7 +39,6 @@ function(HBS, BB, settings, outputTemplate, modalTemplate, variantTableTemplate,
 				
 				this.modalTemplate = HBS.compile(modalTemplate);
 				this.variantTableTemplate = HBS.compile(variantTableTemplate);
-				settings = JSON.parse(settings);
 			},
 			events:{
 				"click #select-btn": "select",
