@@ -1,7 +1,5 @@
-define(["jquery", "handlebars", "backbone", "picSure/settings", "text!output/outputPanel.hbs", "text!options/modal.hbs",
-		"text!output/variantTable.hbs", "common/config"],
-function($, HBS, BB, settings, outputTemplate, modalTemplate,
-		 variantTableTemplate, config){
+define(["jquery", "handlebars", "backbone"],
+function($, HBS, BB){
 	var outputModelDefaults = {
 		totalPatients : 0,
 		spinnerClasses: "spinner-medium spinner-medium-center ",
