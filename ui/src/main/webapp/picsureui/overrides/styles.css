@@ -114,10 +114,8 @@
 }
  #header-content {
      width: 80%;
-     height: 80px;
 }
  .header-btn {
-     top: 40px;
      border-radius: 0px;
      background-color: light-gray;
      border: none;
