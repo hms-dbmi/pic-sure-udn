@@ -51,8 +51,6 @@ function($, HBS, BB){
 		/*
 		 * If you want to show your customized error message, please override this
 		 */
-		outputErrorMessage: undefined,
-
-		variantExplorerStatus: "enabled"
+		outputErrorMessage: undefined
 	};
 });
