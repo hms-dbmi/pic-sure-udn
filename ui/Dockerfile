@@ -1,6 +1,10 @@
+ARG FILE_SUFFIX=development
+
 FROM hms-dbmi/pic-sure-hpds-ui:TARGET_BUILD_VERSION AS pic-sure-ui
-FROM hms-dbmi/pic-sure-auth-ui:TARGET_BUILD_VERSION as psama-ui
-FROM httpd:2.4.27-alpine
+FROM httpd:2.4.46-alpine
+
+ARG FILE_SUFFIX
+ENV FILE_SUFFIX=${FILE_SUFFIX}
 
 # Replace virtual host config file with ours
 COPY httpd-vhosts.conf ${HTTPD_PREFIX}/conf/extra/httpd-vhosts.conf
@@ -21,14 +25,19 @@ RUN sed -i '/^#LoadModule socache_shmcb_module modules\/mod_socache_shmcb.so/s/^
 RUN sed -i 's/DirectoryIndex index.html/DirectoryIndex index_03272020.html/' ${HTTPD_PREFIX}/conf/httpd.conf
 RUN mkdir /usr/local/apache2/logs/ssl_mutex
 
-# copy pic-sure-hpds-ui and psama_ui repos
-COPY --from=psama-ui /usr/local/apache2/htdocs/psamaui /usr/local/apache2/htdocs/psamaui
+# copy pic-sure-hpds-ui repo
 COPY --from=pic-sure-ui /usr/local/apache2/htdocs/picsureui /usr/local/apache2/htdocs/picsureui
 
 # then copy overrides
 COPY src/main/webapp/picsureui /usr/local/apache2/htdocs/picsureui/
-COPY src/main/webapp/psamaui /usr/local/apache2/htdocs/psamaui/
+COPY src/main/webapp/psamaui /usr/local/apache2/htdocs/picsureui/psamaui/
 COPY src/main/resources/favicon.ico /usr/local/apache2/htdocs/
+
+COPY --from=pic-sure-ui /usr/local/apache2/htdocs/picsureui/index.html /usr/local/apache2/htdocs/picsureui/index_${FILE_SUFFIX}.html
+COPY --from=pic-sure-ui /usr/local/apache2/htdocs/picsureui/main.js /usr/local/apache2/htdocs/picsureui/main_${FILE_SUFFIX}.js
+
+RUN sed -i "s/\/picsureui\/main/\/picsureui\/main_${FILE_SUFFIX}/" /usr/local/apache2/htdocs/picsureui/index_${FILE_SUFFIX}.html
+RUN sed -i "s/urlArgs: \"\"/urlArgs: \"v=${FILE_SUFFIX}\"/" /usr/local/apache2/htdocs/picsureui/main_${FILE_SUFFIX}.js
 
 COPY horizontal-logo.png ${HTTPD_PREFIX}/htdocs/picsureui/static/logo.png
 COPY stacked-logo.png ${HTTPD_PREFIX}/htdocs/images/logo.png
