@@ -15,5 +15,6 @@
   "useAsyncQuery": true,
   "categoryAliases": {},
   "categorySearchResultList" : [],
-  "logoPath": "/logo.png"
+  "logoPath": "/logo.png",
+  "jupyterExampleLink": "https://github.com/hms-dbmi/Access-to-Data-using-PIC-SURE-API/tree/master/NIH_Undiagnosed_Diseases_Network"
 }
