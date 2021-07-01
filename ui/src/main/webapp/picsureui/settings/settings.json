@@ -1,20 +1,26 @@
-
 {
-  "resources":[
-		{
-			"id" : "UDN",
-			"name" : "UDN",
-			"basePath" : "/picsure",
-			"findPath" : "/PIC-SURE/search"
-		}
-		],
-  "helpLink": "about:blank",
-  "advancedSearchLink": "",
-  "picSureResourceId":"02e23f52-f354-4e8b-992c-d37c8b9ba140",
-  "applicationIdForBaseQuery":"8b5722c9-62fd-48d6-b0bf-4f67e53efb2b",
-  "useAsyncQuery": true,
-  "categoryAliases": {},
-  "categorySearchResultList" : [],
-  "logoPath": "/logo.png",
+  "resources": [
+    {
+      "id" : "datastage",
+      "name" : "datastage",
+      "basePath" : "/picsure",
+      "findPath" : "/PIC-SURE/search"
+    }
+  ],
+  "queryExportType":"EXPORT_ASYNC",
+  "variantExplorerStatus": "enabled",
+  "footerMessage" : "Date of last extract: 2020-08-11",
+  "picSureResourceId":"c23b6814-7e5b-48d2-80d9-65511d7d2051",
+  "applicationIdForBaseQuery":"22b0a7fc-303b-4669-b4b8-099601a405ef",
+  "helpLink": "mailto:nobody@nowhere.com",
+  "pdfLink": "https://tinyurl.com/PIC-SURE-User-Guide\" target=\"_blank\"",
+  "logoPath":"/static/images/logo.png",
+  "categoryAliases": {
+  },
+  "categorySearchResultList" : [
+    "Gene_with_variant",
+    "ACT"
+  ],
+  "maxVariantCount": "5000",
   "jupyterExampleLink": "https://github.com/hms-dbmi/Access-to-Data-using-PIC-SURE-API/tree/master/NIH_Undiagnosed_Diseases_Network"
 }
