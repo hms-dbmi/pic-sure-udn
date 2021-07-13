@@ -7,6 +7,7 @@
       "findPath" : "/PIC-SURE/search"
     }
   ],
+  "pageTitle": "UDN PIC-SURE",
   "queryExportType":"EXPORT_ASYNC",
   "variantExplorerStatus": "enabled",
   "footerMessage" : "Date of last extract: 2020-08-11",
