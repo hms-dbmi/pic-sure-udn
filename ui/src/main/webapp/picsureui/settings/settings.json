@@ -1,4 +1,8 @@
 {
+  "helpLink": "mailto:avillach_lab_developers@googlegroups.com",
+  "customizeAuth0Login": false,
+  "client_id": "crFxYH3vaxEnu7SSUyz8go27PWgpbj6E",
+  "auth0domain" : "hms-dbmi",
   "resources": [
     {
       "id" : "datastage",
@@ -13,7 +17,6 @@
   "footerMessage" : "Date of last extract: 2020-08-11",
   "picSureResourceId":"c23b6814-7e5b-48d2-80d9-65511d7d2051",
   "applicationIdForBaseQuery":"22b0a7fc-303b-4669-b4b8-099601a405ef",
-  "helpLink": "mailto:nobody@nowhere.com",
   "pdfLink": "https://tinyurl.com/PIC-SURE-User-Guide\" target=\"_blank\"",
   "logoPath":"/static/images/logo.png",
   "videoLink": "https://tinyurl.com/udn-picsure-playlist",
